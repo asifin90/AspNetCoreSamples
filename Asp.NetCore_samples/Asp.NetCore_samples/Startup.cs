@@ -25,26 +25,19 @@ namespace Asp.NetCore_samples
             app.UseDeveloperExceptionPage();
            
 
-            //app.Use(async (context, next) =>
-            //{
-            //    await context.Response.WriteAsync("Hello from Run middleware 1      ");
-            //    await next();
-            //});
-            //app.Use(async (context, next) =>
-            //{
-            //    await context.Response.WriteAsync("Hello from Run middleware 2      ");
-            //    await next();
-            //});
-            //app.Use(async (context, next) =>
-            //{
-            //    throw new Exception("Exception!");
-            //    await CustomMiddleware.UserMiddleware(context);
-            //});
-
-            app.Run(async (context) =>
+            app.Use(async (context, next) =>
             {
-                throw new Exception("Some error processing the request");
-                await context.Response.WriteAsync("Hello World!");
+                await context.Response.WriteAsync("Hello from Run middleware 1      ");
+                await next();
+            });
+            app.Use(async (context, next) =>
+            {
+                await context.Response.WriteAsync("Hello from Run middleware 2      ");
+                await next();
+            });
+            app.Use(async (context, next) =>
+            {
+                await CustomMiddleware.UserMiddleware(context);
             });
 
         }
