@@ -1,0 +1,78 @@
+﻿@model CartProductviewModel
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Index</h1>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th> Name</th>
+            <th> Battery </th>
+            <th>Processor</th>
+            <th>DisplaySize</th>
+            <th>OperatingSystem</th>
+            <th>SimDetails</th>
+            <th>weight</th>
+            <th>isWIFISupport</th>
+            <th>isBluetoothSupport</th>
+            <th>BrandName</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.products) {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.Battery)</td>
+            <td>@Html.DisplayFor(modelItem => item.Processor)</td>
+            <td>@Html.DisplayFor(modelItem => item.DisplaySize)</td>
+            <td>@Html.DisplayFor(modelItem => item.OperatingSystem)</td>
+            <td>@Html.DisplayFor(modelItem => item.SimDetails)</td>
+            <td>@Html.DisplayFor(modelItem => item.weight)</td>
+            <td>@Html.DisplayFor(modelItem => item.isWIFISupport)</td>
+            <td>@Html.DisplayFor(modelItem => item.isBluetoothSupport)</td>
+            <td>@Html.DisplayFor(modelItem => item.BrandName)</td>
+            <td>@{ 
+                    var spanId = item.Name+"_";
+                    <input type="text" id="@spanId" value="@item.Quantity"/>  <input type="button" id="addQuantity" onclick="AddQuantity(@item.Id, '@spanId', @item.price)" value="+" />
+                }
+            </td>
+            <td>@{
+                    var totalPrice = Convert.ToDouble(item.price) * item.Quantity;
+                    spanId = "lbl"+item.Name+"_";
+                }
+                <span id="@spanId">@totalPrice</span> | (@Html.DisplayFor(modelItem => item.Quantity))
+            </td>
+    </tr>
+}
+    </tbody>
+</table>
+
+
+@section Scripts {
+    <script type="text/javascript">
+
+        function AddQuantity(prodId, txtQuantityId, price) {
+            alert(document.getElementById(txtQuantityId).value)
+            var quantity = document.getElementById(txtQuantityId).value;
+            //debugger            
+            $.ajax({
+                type: "GET",
+                url: "/Cart/Buy",
+                data: { Id: prodId, Quantity: quantity, flag: true },
+                dataType: "text",
+                success: function (qty) {
+                    debugger   
+                    document.getElementById("lbl" + txtQuantityId).innerHTML = (price * qty);
+                },
+                error: function (req, status, error) {
+                    alert();
+                }
+            });
+        }        
+    </script>
+}
